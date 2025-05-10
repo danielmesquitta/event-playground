@@ -13,7 +13,7 @@ import (
 func main() {
 	ctx := gracefulshutdown.WithShutdownSignal(context.Background())
 
-	broker := aws.NewAWSBroker()
+	broker := aws.NewBroker()
 
 	sendWelcomeEmailUseCase := usecase.NewSendWelcomeEmail()
 

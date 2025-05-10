@@ -19,12 +19,12 @@ import (
 	"github.com/samber/lo"
 )
 
-type AWSBroker struct {
+type Broker struct {
 	publisher  message.Publisher
 	subscriber message.Subscriber
 }
 
-func NewAWSBroker() *AWSBroker {
+func NewBroker() *Broker {
 	logger := watermill.NewStdLogger(false, false)
 
 	snsOpts := []func(*amazonsns.Options){
@@ -95,13 +95,13 @@ func NewAWSBroker() *AWSBroker {
 		panic(err)
 	}
 
-	return &AWSBroker{
+	return &Broker{
 		publisher:  publisher,
 		subscriber: subscriber,
 	}
 }
 
-func (b *AWSBroker) Publish(
+func (b *Broker) Publish(
 	ctx context.Context,
 	topic string,
 	payload any,
@@ -110,15 +110,15 @@ func (b *AWSBroker) Publish(
 	if err != nil {
 		return fmt.Errorf("failed to marshal payload: %w", err)
 	}
-	message := message.NewMessage(uuid.New().String(), payloadBytes)
+	message := message.NewMessage(uuid.NewString(), payloadBytes)
 	return b.publisher.Publish(topic, message)
 }
 
-func (b *AWSBroker) Subscribe(
+func (b *Broker) Subscribe(
 	ctx context.Context,
 	topic string,
 ) (<-chan *message.Message, error) {
 	return b.subscriber.Subscribe(ctx, topic)
 }
 
-var _ broker.Broker = &AWSBroker{}
+var _ broker.Broker = &Broker{}
