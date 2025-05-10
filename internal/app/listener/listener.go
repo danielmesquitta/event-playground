@@ -10,16 +10,16 @@ import (
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/danielmesquitta/event-playground/internal/app/listener/handler"
 	"github.com/danielmesquitta/event-playground/internal/app/listener/topic"
-	"github.com/danielmesquitta/event-playground/internal/pkg/broker"
+	"github.com/danielmesquitta/event-playground/internal/provider/broker"
 )
 
 type Listener struct {
-	broker             *broker.Broker
+	broker             broker.Broker
 	userCreatedHandler *handler.UserCreatedHandler
 }
 
 func NewListener(
-	broker *broker.Broker,
+	broker broker.Broker,
 	userCreatedHandler *handler.UserCreatedHandler,
 ) *Listener {
 	return &Listener{

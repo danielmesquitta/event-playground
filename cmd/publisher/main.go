@@ -10,11 +10,11 @@ import (
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/danielmesquitta/event-playground/internal/app/listener/topic"
 	"github.com/danielmesquitta/event-playground/internal/domain/entity"
-	"github.com/danielmesquitta/event-playground/internal/pkg/broker"
+	"github.com/danielmesquitta/event-playground/internal/provider/broker/aws"
 )
 
 func main() {
-	broker := broker.NewBroker()
+	broker := aws.NewAWSBroker()
 
 	user := entity.User{
 		ID:        uuid.NewString(),

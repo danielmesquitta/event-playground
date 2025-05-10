@@ -22,10 +22,12 @@ This project serves as a playground for experimenting with event-driven architec
 ├── internal/              # Private application code
 │   ├── app/               # Application-specific code
 │   ├── domain/            # Domain models and business logic
-│   └── pkg/               # Shared packages
+│   ├── pkg/               # Shared packages
+│   └── provider/          # External service providers
 ├── docker-compose.yml     # Docker services configuration
 ├── go.mod                 # Go module definition
-└── go.sum                 # Go module checksums
+├── go.sum                 # Go module checksums
+└── Makefile               # Scripts
 ```
 
 ## Getting Started

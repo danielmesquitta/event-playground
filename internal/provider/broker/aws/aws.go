@@ -1,21 +1,30 @@
-package broker
+package aws
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/url"
 
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-aws/sns"
 	"github.com/ThreeDotsLabs/watermill-aws/sqs"
+	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	amazonsns "github.com/aws/aws-sdk-go-v2/service/sns"
 	amazonsqs "github.com/aws/aws-sdk-go-v2/service/sqs"
 	transport "github.com/aws/smithy-go/endpoints"
+	"github.com/danielmesquitta/event-playground/internal/provider/broker"
+	"github.com/google/uuid"
 	"github.com/samber/lo"
 )
 
-func newAWSBroker() *Broker {
+type AWSBroker struct {
+	publisher  message.Publisher
+	subscriber message.Subscriber
+}
+
+func NewAWSBroker() *AWSBroker {
 	logger := watermill.NewStdLogger(false, false)
 
 	snsOpts := []func(*amazonsns.Options){
@@ -86,8 +95,30 @@ func newAWSBroker() *Broker {
 		panic(err)
 	}
 
-	return &Broker{
+	return &AWSBroker{
 		publisher:  publisher,
 		subscriber: subscriber,
 	}
 }
+
+func (b *AWSBroker) Publish(
+	ctx context.Context,
+	topic string,
+	payload any,
+) error {
+	payloadBytes, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("failed to marshal payload: %w", err)
+	}
+	message := message.NewMessage(uuid.New().String(), payloadBytes)
+	return b.publisher.Publish(topic, message)
+}
+
+func (b *AWSBroker) Subscribe(
+	ctx context.Context,
+	topic string,
+) (<-chan *message.Message, error) {
+	return b.subscriber.Subscribe(ctx, topic)
+}
+
+var _ broker.Broker = &AWSBroker{}
