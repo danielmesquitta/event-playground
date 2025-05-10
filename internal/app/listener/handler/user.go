@@ -6,13 +6,19 @@ import (
 	"fmt"
 
 	"github.com/danielmesquitta/event-playground/internal/domain/entity"
+	"github.com/danielmesquitta/event-playground/internal/domain/usecase"
 )
 
 type UserCreatedHandler struct {
+	sendWelcomeEmailUseCase *usecase.SendWelcomeEmail
 }
 
-func NewUserCreatedHandler() *UserCreatedHandler {
-	return &UserCreatedHandler{}
+func NewUserCreatedHandler(
+	sendWelcomeEmailUseCase *usecase.SendWelcomeEmail,
+) *UserCreatedHandler {
+	return &UserCreatedHandler{
+		sendWelcomeEmailUseCase: sendWelcomeEmailUseCase,
+	}
 }
 
 func (h *UserCreatedHandler) Handle(
@@ -24,9 +30,7 @@ func (h *UserCreatedHandler) Handle(
 		return fmt.Errorf("failed to unmarshal user: %w", err)
 	}
 
-	fmt.Printf("Received user: %+v\n", user)
-
-	return nil
+	return h.sendWelcomeEmailUseCase.Execute(ctx, &user)
 }
 
 var _ Handler = &UserCreatedHandler{}

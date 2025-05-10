@@ -21,7 +21,7 @@ func newAWSBroker() *Broker {
 	snsOpts := []func(*amazonsns.Options){
 		amazonsns.WithEndpointResolverV2(sns.OverrideEndpointResolver{
 			Endpoint: transport.Endpoint{
-				URI: *lo.Must(url.Parse("http://localstack:4566")),
+				URI: *lo.Must(url.Parse("http://localhost:4566")),
 			},
 		}),
 	}
@@ -29,7 +29,7 @@ func newAWSBroker() *Broker {
 	sqsOpts := []func(*amazonsqs.Options){
 		amazonsqs.WithEndpointResolverV2(sqs.OverrideEndpointResolver{
 			Endpoint: transport.Endpoint{
-				URI: *lo.Must(url.Parse("http://localstack:4566")),
+				URI: *lo.Must(url.Parse("http://localhost:4566")),
 			},
 		}),
 	}

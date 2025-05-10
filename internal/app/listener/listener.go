@@ -29,6 +29,10 @@ func NewListener(
 }
 
 func (l *Listener) Run(ctx context.Context) error {
+	defer func() {
+		<-ctx.Done()
+	}()
+
 	topics := map[topic.Topic]handler.Handler{
 		topic.TopicUserCreated: l.userCreatedHandler,
 	}
